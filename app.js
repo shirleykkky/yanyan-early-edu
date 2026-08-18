@@ -380,21 +380,45 @@ function toggleSafetyTotal(key, el) {
 function renderEnglish() {
   let html = '';
 
-  // SSS儿歌
+  // SSS儿歌（可播放视频）
   html += `<div class="module-card">
     <div class="module-header">
       <div class="module-icon" style="background:linear-gradient(135deg,#FF8FAB,#FFB366);">🎵</div>
       <div class="module-title">SSS 儿歌</div>
     </div>
-    <div style="font-size:12px;color:var(--text-light);margin-bottom:8px;">Super Simple Songs · 磨耳朵 · 跟着旋律动起来</div>`;
-  SSS_SONGS.forEach(song => {
+    <div style="font-size:12px;color:var(--text-light);margin-bottom:8px;">Super Simple Songs · 点击播放视频 · 磨耳朵跟着动</div>`;
+  SSS_SONGS.forEach((song, i) => {
     html += `<div class="activity-item">
-      <div class="activity-name">${song.title}</div>
+      <div class="activity-name" style="cursor:pointer;" onclick="toggleSongVideo('song-vid-${i}')">${song.title}</div>
       <div class="activity-desc">${song.desc}</div>
-      <button class="play-btn" onclick="speakEnglish('${song.title}')">🔊 播放歌名</button>
+      <div style="display:flex;gap:6px;margin-top:6px;">
+        <button class="play-btn" onclick="toggleSongVideo('song-vid-${i}')">▶ 播放视频</button>
+        <button class="play-btn" style="background:var(--purple);" onclick="speakEnglish('${song.title.replace(/'/g, "\\'")}')">🔊 读歌名</button>
+      </div>
+      <div id="song-vid-${i}" style="display:none;margin-top:8px;">
+        <div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:10px;">
+          <iframe style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;" 
+            src="https://www.youtube-nocookie.com/embed/${song.vid}?rel=0" 
+            allowfullscreen allow="autoplay; encrypted-media"></iframe>
+        </div>
+      </div>
     </div>`;
   });
   html += `</div>`;
+
+  // 添加展开/收起函数
+  html += `<script>
+    function toggleSongVideo(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      if (el.style.display === 'none') {
+        el.style.display = 'block';
+        el.scrollIntoView({behavior:'smooth', block:'nearest'});
+      } else {
+        el.style.display = 'none';
+      }
+    }
+  </script>`;
 
   // 亲子口语
   html += `<div class="module-card">
