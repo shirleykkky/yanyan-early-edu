@@ -2,10 +2,23 @@
 
 // ---- 日期与主题计算 ----
 const START_DATE = new Date(2026, 7, 17); // 8月17日为Day0
+let _viewDate = new Date(); // 当前查看的日期，默认今天
 
-function getDayIndex() {
+function dateToKey(d) {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+
+function isToday(d) {
   const now = new Date();
-  const diff = Math.floor((now - START_DATE) / 86400000);
+  return dateToKey(d) === dateToKey(now);
+}
+
+function getDayIndex(d) {
+  const ref = d || _viewDate;
+  const diff = Math.floor((ref - START_DATE) / 86400000);
   return Math.max(0, diff);
 }
 
@@ -17,7 +30,35 @@ function formatDate(d) {
   const m = d.getMonth() + 1;
   const day = d.getDate();
   const weekdays = ['日','一','二','三','四','五','六'];
+  const todayTag = isToday(d) ? '' : '';
   return `${m}月${day}日 周${weekdays[d.getDay()]}`;
+}
+
+// ---- 日期切换 ----
+function changeDate(offset) {
+  const newDate = new Date(_viewDate);
+  newDate.setDate(newDate.getDate() + offset);
+  // 不能超过今天
+  if (newDate > new Date()) return;
+  // 不能早于START_DATE
+  if (newDate < START_DATE) return;
+  _viewDate = newDate;
+  renderToday();
+}
+
+function showDatePicker() {
+  const picker = document.getElementById('datePicker');
+  picker.style.display = picker.style.display === 'none' ? 'block' : 'none';
+  picker.value = dateToKey(_viewDate);
+  picker.max = dateToKey(new Date());
+  picker.min = dateToKey(START_DATE);
+}
+
+function pickDate(val) {
+  const parts = val.split('-');
+  _viewDate = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+  document.getElementById('datePicker').style.display = 'none';
+  renderToday();
 }
 
 function switchPage(page) {
@@ -30,14 +71,23 @@ function switchPage(page) {
 
 // ---- 今日模块 ----
 function renderToday() {
-  const now = new Date();
-  document.getElementById('todayDate').textContent = formatDate(now);
-  const dayIdx = getDayIndex();
-  const weekIdx = getWeekIndex();
+  const viewDate = _viewDate;
+  const dateEl = document.getElementById('todayDate');
+  dateEl.textContent = formatDate(viewDate);
+  dateEl.className = 'date-nav-text' + (isToday(viewDate) ? ' is-today' : '');
+  
+  // 更新前后按钮状态
+  const prevBtn = document.getElementById('datePrev');
+  const nextBtn = document.getElementById('dateNext');
+  if (prevBtn) prevBtn.disabled = (viewDate <= START_DATE);
+  if (nextBtn) nextBtn.disabled = isToday(viewDate);
+
+  const dayIdx = getDayIndex(viewDate);
+  const weekIdx = Math.floor(dayIdx / 7) % WEEK_THEMES.length;
   const theme = WEEK_THEMES[weekIdx];
   document.getElementById('weekTheme').textContent = `本周主题：${theme.icon} ${theme.name}`;
 
-  // 获取今日数据
+  // 获取当日数据
   const fineDay = dayIdx % FINE_MOTOR_POOL.length;
   const langDay = dayIdx % LANGUAGE_POOL.length;
   const cogDay = dayIdx % COGNITION_POOL.length;
@@ -52,8 +102,9 @@ function renderToday() {
   const motorData = GROSS_MOTOR_POOL[motorDay];
   const reminder = REMINDERS_POOL[reminderDay];
 
-  // 读取打卡状态
-  const todayKey = `check_${now.toISOString().slice(0,10)}`;
+  // 读取打卡状态（按查看日期）
+  const dateKey = dateToKey(viewDate);
+  const todayKey = `check_${dateKey}`;
   const checks = JSON.parse(localStorage.getItem(todayKey) || '{}');
 
   let html = '';
@@ -148,23 +199,26 @@ function renderToday() {
   </div>`;
 
   document.getElementById('todayModules').innerHTML = html;
-  updateProgress();
+  updateProgress(viewDate);
 }
 
 function toggleCheck(module) {
-  const todayKey = `check_${new Date().toISOString().slice(0,10)}`;
+  const dateKey = dateToKey(_viewDate);
+  const todayKey = `check_${dateKey}`;
   const checks = JSON.parse(localStorage.getItem(todayKey) || '{}');
   checks[module] = !checks[module];
   localStorage.setItem(todayKey, JSON.stringify(checks));
   renderToday();
 }
 
-function updateProgress() {
-  const todayKey = `check_${new Date().toISOString().slice(0,10)}`;
+function updateProgress(viewDate) {
+  const dateKey = dateToKey(viewDate || _viewDate);
+  const todayKey = `check_${dateKey}`;
   const checks = JSON.parse(localStorage.getItem(todayKey) || '{}');
   const done = Object.values(checks).filter(Boolean).length;
   document.getElementById('dailyProgress').style.width = `${done/5*100}%`;
-  document.getElementById('progressText').textContent = `今日进度 ${done}/5`;
+  const label = isToday(viewDate || _viewDate) ? '今日' : formatDate(viewDate || _viewDate).slice(0,5);
+  document.getElementById('progressText').textContent = `${label}进度 ${done}/5`;
 }
 
 // ---- 发育观察 ----
