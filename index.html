@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="言言早教台">
+<meta name="theme-color" content="#FFF5F0">
+<link rel="manifest" href="manifest.json">
+<title>言言早教工作台</title>
+<style>
+:root {
+  --pink: #FF8FAB;
+  --pink-light: #FFD6E0;
+  --orange: #FFB366;
+  --orange-light: #FFE0B2;
+  --green: #7BC67E;
+  --green-light: #C8E6C9;
+  --blue: #64B5F6;
+  --blue-light: #BBDEFB;
+  --purple: #B39DDB;
+  --purple-light: #E1D5F0;
+  --yellow: #FFD54F;
+  --yellow-light: #FFF9C4;
+  --red: #EF9A9A;
+  --bg: #FFF5F0;
+  --text: #4A4A4A;
+  --text-light: #8A8A8A;
+  --sidebar-w: 76px;
+  --radius: 16px;
+  --radius-sm: 10px;
+}
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+}
+/* 左侧导航 */
+.sidebar {
+  width: var(--sidebar-w);
+  min-width: var(--sidebar-w);
+  height: 100vh;
+  background: #fff;
+  box-shadow: 2px 0 12px rgba(0,0,0,0.06);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 0 12px;
+  z-index: 100;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.sidebar::-webkit-scrollbar { width: 0; }
+.sidebar-logo {
+  width: 44px; height: 44px;
+  background: linear-gradient(135deg, var(--pink), var(--orange));
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; color: #fff; font-weight: 700;
+  margin-bottom: 8px; flex-shrink: 0;
+}
+.nav-item {
+  width: 64px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 7px 2px 6px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all .2s;
+  margin-bottom: 2px;
+  flex-shrink: 0;
+  text-decoration: none;
+  border: none;
+  background: none;
+}
+.nav-item:hover, .nav-item.active {
+  background: var(--pink-light);
+}
+.nav-icon {
+  width: 28px; height: 28px;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px;
+  margin-bottom: 2px;
+}
+.nav-label {
+  font-size: 10px;
+  color: var(--text-light);
+  text-align: center;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+.nav-item.active .nav-label { color: var(--pink); font-weight: 600; }
+/* 右侧内容区 */
+.main-content {
+  flex: 1;
+  height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 12px 14px 20px;
+  -webkit-overflow-scrolling: touch;
+}
+.main-content::-webkit-scrollbar { width: 3px; }
+.main-content::-webkit-scrollbar-thumb { background: #ddd; border-radius: 3px; }
+/* 页面标题 */
+.page-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 12px;
+}
+.page-title {
+  font-size: 20px; font-weight: 700;
+  background: linear-gradient(135deg, var(--pink), var(--orange));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.page-date {
+  font-size: 12px; color: var(--text-light);
+  background: #fff; padding: 4px 10px; border-radius: 20px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+/* 模块卡片 */
+.module-card {
+  background: #fff;
+  border-radius: var(--radius);
+  padding: 14px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  transition: all .2s;
+}
+.module-header {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 10px;
+}
+.module-icon {
+  width: 32px; height: 32px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; color: #fff; flex-shrink: 0;
+}
+.module-title { font-size: 15px; font-weight: 600; flex: 1; }
+.module-check {
+  width: 22px; height: 22px; border-radius: 6px;
+  border: 2px solid #ddd; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; transition: all .2s; flex-shrink: 0;
+  background: #fff;
+}
+.module-check.done {
+  background: var(--green); border-color: var(--green); color: #fff;
+}
+/* 活动项 */
+.activity-item {
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  position: relative;
+}
+.activity-name {
+  font-size: 13px; font-weight: 600; margin-bottom: 4px;
+  display: flex; align-items: center; gap: 6px;
+}
+.activity-tag {
+  display: inline-block;
+  font-size: 10px; padding: 1px 6px; border-radius: 8px;
+  font-weight: 500;
+}
+.activity-desc {
+  font-size: 12px; color: var(--text-light); line-height: 1.6;
+}
+.activity-tips {
+  font-size: 11px; color: var(--green); margin-top: 4px;
+  padding-top: 4px; border-top: 1px dashed #e0e0e0;
+}
+/* 英文模块播放按钮 */
+.play-btn {
+  display: inline-flex; align-items: center; gap: 4px;
+  background: var(--blue); color: #fff;
+  border: none; border-radius: 20px;
+  padding: 4px 12px; font-size: 12px; cursor: pointer;
+  margin-top: 6px;
+}
+.play-btn:active { transform: scale(0.95); }
+/* 养育提醒 */
+.reminder-box {
+  background: linear-gradient(135deg, #FFF9C4, #FFE0B2);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px; font-size: 12px; line-height: 1.7;
+}
+.reminder-box strong { color: var(--orange); }
+/* 发育观察 */
+.observe-section { margin-bottom: 14px; }
+.observe-title {
+  font-size: 14px; font-weight: 600; margin-bottom: 8px;
+  padding-left: 8px; border-left: 3px solid var(--pink);
+}
+.observe-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 0; font-size: 13px; border-bottom: 1px solid #f0f0f0;
+}
+.observe-check {
+  width: 20px; height: 20px; border-radius: 50%;
+  border: 2px solid #ddd; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; transition: all .2s; flex-shrink: 0;
+}
+.observe-check.done {
+  background: var(--green); border-color: var(--green); color: #fff;
+}
+/* 活动库 */
+.filter-bar {
+  display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px;
+}
+.filter-btn {
+  padding: 4px 12px; border-radius: 20px; font-size: 12px;
+  border: 1.5px solid #e0e0e0; background: #fff;
+  cursor: pointer; transition: all .2s;
+}
+.filter-btn.active {
+  background: var(--pink); color: #fff; border-color: var(--pink);
+}
+/* 教具清单 */
+.tool-category {
+  margin-bottom: 14px;
+}
+.tool-category-title {
+  font-size: 14px; font-weight: 600; margin-bottom: 8px;
+  display: flex; align-items: center; gap: 6px;
+}
+.tool-list {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
+}
+.tool-item {
+  background: var(--bg); border-radius: 8px; padding: 8px 10px; font-size: 12px;
+}
+/* 空间布置 */
+.zone-card {
+  background: #fff; border-radius: var(--radius); padding: 14px;
+  margin-bottom: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+.zone-title {
+  font-size: 14px; font-weight: 600; margin-bottom: 6px;
+  display: flex; align-items: center; gap: 6px;
+}
+.zone-desc { font-size: 12px; line-height: 1.7; color: var(--text-light); }
+.zone-checklist { margin-top: 8px; }
+.zone-checklist-item {
+  font-size: 12px; padding: 3px 0; display: flex; align-items: center; gap: 6px;
+}
+/* 养育原则 */
+.principle-card {
+  background: #fff; border-radius: var(--radius); padding: 14px;
+  margin-bottom: 8px; display: flex; gap: 10px; align-items: flex-start;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+.principle-num {
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700; color: #fff; flex-shrink: 0;
+}
+.principle-text { font-size: 13px; line-height: 1.6; }
+/* 禁止项 */
+.ban-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 0; font-size: 13px; border-bottom: 1px solid #f5f5f5;
+}
+/* 主题周 */
+.week-card {
+  background: #fff; border-radius: var(--radius); padding: 14px;
+  margin-bottom: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+.week-badge {
+  display: inline-block; padding: 2px 10px; border-radius: 12px;
+  font-size: 11px; font-weight: 600; margin-bottom: 6px;
+}
+/* 保存成功提示 */
+.toast {
+  position: fixed; top: 40px; left: 50%; transform: translateX(-50%);
+  background: rgba(0,0,0,0.7); color: #fff; padding: 8px 20px;
+  border-radius: 20px; font-size: 13px; z-index: 9999;
+  animation: toastIn .3s;
+}
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+/* 页面隐藏 */
+.page { display: none; }
+.page.active { display: block; }
+/* 颜色标签 */
+.color-dot {
+  width: 14px; height: 14px; border-radius: 50%; display: inline-block;
+  border: 2px solid #fff; box-shadow: 0 0 0 1px #ddd;
+}
+/* 语音播放动画 */
+.speaking { animation: pulse .8s infinite; }
+@keyframes pulse {
+  0%,100% { opacity: 1; }
+  50% { opacity: .5; }
+}
+/* 响应式 */
+@media (min-width: 768px) {
+  :root { --sidebar-w: 90px; }
+  .nav-item { width: 76px; padding: 10px 4px 8px; }
+  .nav-icon { width: 32px; height: 32px; font-size: 17px; }
+  .nav-label { font-size: 11px; }
+  .main-content { padding: 16px 20px 24px; }
+}
+@media (min-width: 1024px) {
+  :root { --sidebar-w: 100px; }
+  .main-content { max-width: 800px; }
+}
+/* 安全检查清单 */
+.safety-check {
+  display: flex; align-items: center; gap: 8px;
+  padding: 5px 0; font-size: 12px;
+}
+.safety-check input[type=checkbox] {
+  width: 16px; height: 16px; accent-color: var(--green);
+}
+/* 进度条 */
+.progress-bar {
+  height: 6px; background: #f0f0f0; border-radius: 3px;
+  margin-top: 8px; overflow: hidden;
+}
+.progress-fill {
+  height: 100%; border-radius: 3px; transition: width .5s;
+}
+/* 月份显示 */
+.month-badge {
+  display: inline-block; background: linear-gradient(135deg, var(--pink), var(--orange));
+  color: #fff; padding: 2px 10px; border-radius: 12px; font-size: 11px; font-weight: 600;
+}
+</style>
+<!-- 左侧导航 -->
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-logo">言</div>
+  <button class="nav-item active" data-page="today" onclick="switchPage('today')">
+    <div class="nav-icon" style="background:#FFE0B2;">🌞</div>
+    <div class="nav-label">今日</div>
+  </button>
+  <button class="nav-item" data-page="observe" onclick="switchPage('observe')">
+    <div class="nav-icon" style="background:#C8E6C9;">📋</div>
+    <div class="nav-label">观察</div>
+  </button>
+  <button class="nav-item" data-page="activity" onclick="switchPage('activity')">
+    <div class="nav-icon" style="background:#BBDEFB;">🎯</div>
+    <div class="nav-label">活动库</div>
+  </button>
+  <button class="nav-item" data-page="tools" onclick="switchPage('tools')">
+    <div class="nav-icon" style="background:#E1D5F0;">🧰</div>
+    <div class="nav-label">教具</div>
+  </button>
+  <button class="nav-item" data-page="space" onclick="switchPage('space')">
+    <div class="nav-icon" style="background:#FFF9C4;">🏠</div>
+    <div class="nav-label">空间</div>
+  </button>
+  <button class="nav-item" data-page="english" onclick="switchPage('english')">
+    <div class="nav-icon" style="background:#BBDEFB;">🔤</div>
+    <div class="nav-label">英文</div>
+  </button>
+  <button class="nav-item" data-page="theme" onclick="switchPage('theme')">
+    <div class="nav-icon" style="background:#FFD6E0;">🎨</div>
+    <div class="nav-label">主题</div>
+  </button>
+  <button class="nav-item" data-page="principle" onclick="switchPage('principle')">
+    <div class="nav-icon" style="background:#FFD6E0;">❤️</div>
+    <div class="nav-label">原则</div>
+  </button>
+</nav>
+
+<!-- 右侧内容区 -->
+<div class="main-content" id="mainContent">
+
+  <!-- ====== 今日模块 ====== -->
+  <div class="page active" id="page-today">
+    <div class="page-header">
+      <div class="page-title">言言早教台</div>
+      <div class="page-date" id="todayDate"></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+      <span class="month-badge" id="monthBadge">8月龄</span>
+      <span style="font-size:12px;color:var(--text-light);" id="weekTheme"></span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="dailyProgress" style="width:0%;background:linear-gradient(90deg,var(--pink),var(--orange));"></div></div>
+    <div style="font-size:11px;color:var(--text-light);margin:4px 0 12px;" id="progressText">今日进度 0/5</div>
+    <div id="todayModules"></div>
+  </div>
+
+  <!-- ====== 发育观察 ====== -->
+  <div class="page" id="page-observe">
+    <div class="page-header">
+      <div class="page-title">发育观察记录</div>
+      <div class="month-badge" id="observeMonth">8月龄</div>
+    </div>
+    <div style="font-size:12px;color:var(--text-light);margin-bottom:12px;">勾选自动保存到本机 · 随月龄变化更新观察项</div>
+    <div id="observeContent"></div>
+  </div>
+
+  <!-- ====== 活动库 ====== -->
+  <div class="page" id="page-activity">
+    <div class="page-header">
+      <div class="page-title">活动库</div>
+    </div>
+    <div class="filter-bar" id="domainFilter"></div>
+    <div class="filter-bar" id="themeFilter"></div>
+    <div id="activityList"></div>
+  </div>
+
+  <!-- ====== 教具清单 ====== -->
+  <div class="page" id="page-tools">
+    <div class="page-header">
+      <div class="page-title">教具清单</div>
+    </div>
+    <div style="font-size:12px;color:var(--text-light);margin-bottom:12px;">全部极简低成本 · 优先家居物品和真实食材</div>
+    <div id="toolsContent"></div>
+  </div>
+
+  <!-- ====== 空间布置 ====== -->
+  <div class="page" id="page-space">
+    <div class="page-header">
+      <div class="page-title">空间布置</div>
+    </div>
+    <div style="font-size:12px;color:var(--text-light);margin-bottom:12px;">安全探索空间 · 五大功能区 · 低成本在家实现</div>
+    <div id="spaceContent"></div>
+  </div>
+
+  <!-- ====== 英文启蒙 ====== -->
+  <div class="page" id="page-english">
+    <div class="page-header">
+      <div class="page-title">英文启蒙</div>
+    </div>
+    <div style="font-size:12px;color:var(--text-light);margin-bottom:12px;">磨耳朵 · 画面对应 · 不认读不拼写 · 无压力</div>
+    <div id="englishContent"></div>
+  </div>
+
+  <!-- ====== 主题周 ====== -->
+  <div class="page" id="page-theme">
+    <div class="page-header">
+      <div class="page-title">主题周循环</div>
+    </div>
+    <div style="font-size:12px;color:var(--text-light);margin-bottom:12px;">每周简单重复巩固 · 符合低龄宝宝记忆规律</div>
+    <div id="themeContent"></div>
+  </div>
+
+  <!-- ====== 养育原则 ====== -->
+  <div class="page" id="page-principle">
+    <div class="page-header">
+      <div class="page-title">养育原则</div>
+    </div>
+    <div style="font-size:12px;color:var(--text-light);margin-bottom:12px;">言言专属 · 固定不变</div>
+    <div id="principleContent"></div>
+    <div style="margin-top:16px;">
+      <div style="font-size:15px;font-weight:600;margin-bottom:10px;">🚫 严格禁止</div>
+      <div id="banContent"></div>
+    </div>
+  </div>
+
+</div>
+
+<script src="data.js?v=2"></script>
+<script src="app.js?v=2"></script>
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js').catch(()=>{});
+}
+</script>
+</body>
+</html>
