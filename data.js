@@ -650,21 +650,21 @@ const SPACE_ZONES = [
 
 // ===== 英文启蒙 - SSS儿歌 =====
 const SSS_SONGS = [
-  { title: 'Hello!', desc: '打招呼入门，旋律简单', keywords: 'hello, hi, how are you' },
-  { title: 'Baby Shark', desc: '动物认知+动作模仿', keywords: 'shark, mommy, daddy' },
-  { title: 'Head Shoulders Knees and Toes', desc: '五官身体认知', keywords: 'head, shoulders, knees, toes' },
-  { title: 'I See Something Blue', desc: '颜色认知经典', keywords: 'blue, red, yellow, green' },
-  { title: 'I See Something Pink', desc: '颜色认知延伸', keywords: 'pink, orange, brown, purple' },
-  { title: 'Put On Your Shoes', desc: '日常穿衣', keywords: 'shoes, jacket, hat' },
-  { title: 'One Little Finger', desc: '身体部位指认', keywords: 'finger, head, nose, chin' },
-  { title: 'Walking Walking', desc: '大运动动作', keywords: 'walking, hop, run, stop' },
-  { title: 'Row Row Row Your Boat', desc: '经典儿歌，律动', keywords: 'row, boat, stream' },
-  { title: 'Twinkle Twinkle Little Star', desc: '睡前安抚', keywords: 'star, sky, night' },
-  { title: 'The Wheels On The Bus', desc: '日常场景认知', keywords: 'wheels, door, wipers' },
-  { title: 'Old MacDonald', desc: '动物叫声', keywords: 'cow, pig, duck, sheep' },
-  { title: 'Five Little Ducks', desc: '数字启蒙', keywords: 'five, ducks, quack' },
-  { title: 'Rain Rain Go Away', desc: '天气认知', keywords: 'rain, go away' },
-  { title: 'If You\'re Happy', desc: '情绪认知+动作', keywords: 'happy, clap, stomp' },
+  { title: 'Hello!', desc: '打招呼入门，旋律简单', vid: 'tVlcKp3b1_g' },
+  { title: 'Baby Shark', desc: '动物认知+动作模仿', vid: 'XqZsoesa55w' },
+  { title: 'Head Shoulders Knees and Toes', desc: '五官身体认知', vid: 'WX8HmOg5VqA' },
+  { title: 'I See Something Blue', desc: '颜色认知经典', vid: 'Y0mPV0Wa4wI' },
+  { title: 'I See Something Pink', desc: '颜色认知延伸', vid: 'CGzYHBgIrdU' },
+  { title: 'Put On Your Shoes', desc: '日常穿衣', vid: '-jB7e4AAFGQ' },
+  { title: 'One Little Finger', desc: '身体部位指认', vid: 'eBJdHn6s0RQ' },
+  { title: 'Walking Walking', desc: '大运动动作', vid: '4U3bIj6gS0A' },
+  { title: 'Row Row Row Your Boat', desc: '经典儿歌，律动', vid: 'R6gLp4aQ5Sw' },
+  { title: 'Twinkle Twinkle Little Star', desc: '睡前安抚', vid: 'lOpS2_6sCRk' },
+  { title: 'The Wheels On The Bus', desc: '日常场景认知', vid: 'e1Kql2pINsU' },
+  { title: 'Old MacDonald', desc: '动物叫声', vid: '4Q6N04CJCvI' },
+  { title: 'Five Little Ducks', desc: '数字启蒙', vid: 'p5ecJmF03dM' },
+  { title: 'Rain Rain Go Away', desc: '天气认知', vid: 'L4DBG-CnFYc' },
+  { title: 'If You\'re Happy', desc: '情绪认知+动作', vid: 'l4q8z38FpeY' },
 ];
 
 // ===== 英文启蒙 - 亲子口语 =====
