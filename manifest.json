@@ -1,0 +1,18 @@
+{
+  "name": "言言早教工作台",
+  "short_name": "言言早教",
+  "description": "8月龄宝宝言言的专属早教工作台",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FFF5F0",
+  "theme_color": "#FF8FAB",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23FF8FAB'/><text x='50' y='68' font-size='50' text-anchor='middle' fill='white'>言</text></svg>",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
