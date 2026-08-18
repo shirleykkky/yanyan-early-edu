@@ -329,6 +329,24 @@ body {
 .progress-fill {
   height: 100%; border-radius: 3px; transition: width .5s;
 }
+/* 日期选择器 */
+.date-nav {
+  display: flex; align-items: center; gap: 6px;
+  background: #fff; padding: 3px 10px; border-radius: 20px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  cursor: pointer; user-select: none;
+}
+.date-nav-btn {
+  width: 24px; height: 24px; border-radius: 50%; border: none;
+  background: var(--bg); color: var(--text); font-size: 14px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: all .2s; padding: 0;
+}
+.date-nav-btn:active { background: var(--pink-light); }
+.date-nav-btn:disabled { opacity: .3; cursor: default; }
+.date-nav-btn:disabled:active { background: var(--bg); }
+.date-nav-text { font-size: 12px; color: var(--text); min-width: 80px; text-align: center; }
+.date-nav-text.is-today { color: var(--pink); font-weight: 600; }
 /* 月份显示 */
 .month-badge {
   display: inline-block; background: linear-gradient(135deg, var(--pink), var(--orange));
@@ -379,7 +397,12 @@ body {
   <div class="page active" id="page-today">
     <div class="page-header">
       <div class="page-title">言言早教台</div>
-      <div class="page-date" id="todayDate"></div>
+      <div class="date-nav" id="dateNav">
+        <button class="date-nav-btn" id="datePrev" onclick="changeDate(-1)">&#8249;</button>
+        <div class="date-nav-text" id="todayDate" onclick="showDatePicker()"></div>
+        <button class="date-nav-btn" id="dateNext" onclick="changeDate(1)">&#8250;</button>
+      </div>
+      <input type="date" id="datePicker" style="display:none;position:absolute;top:36px;right:14px;z-index:99;border:1px solid #ddd;border-radius:8px;padding:4px 8px;font-size:13px;" onchange="pickDate(this.value)">
     </div>
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
       <span class="month-badge" id="monthBadge">8月龄</span>
