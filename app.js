@@ -376,6 +376,18 @@ function toggleSafetyTotal(key, el) {
   localStorage.setItem(`safety_total_${decodeURIComponent(key)}`, el.checked ? '1' : '0');
 }
 
+// ---- SSS儿歌视频展开/收起 ----
+function toggleSongVideo(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (el.style.display === 'none') {
+    el.style.display = 'block';
+    el.scrollIntoView({behavior:'smooth', block:'nearest'});
+  } else {
+    el.style.display = 'none';
+  }
+}
+
 // ---- 英文启蒙页 ----
 function renderEnglish() {
   let html = '';
@@ -405,20 +417,6 @@ function renderEnglish() {
     </div>`;
   });
   html += `</div>`;
-
-  // 添加展开/收起函数
-  html += `<script>
-    function toggleSongVideo(id) {
-      const el = document.getElementById(id);
-      if (!el) return;
-      if (el.style.display === 'none') {
-        el.style.display = 'block';
-        el.scrollIntoView({behavior:'smooth', block:'nearest'});
-      } else {
-        el.style.display = 'none';
-      }
-    }
-  </script>`;
 
   // 亲子口语
   html += `<div class="module-card">
