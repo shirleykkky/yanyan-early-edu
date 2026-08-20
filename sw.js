@@ -1,4 +1,4 @@
-const CACHE_NAME = 'yanyan-edu-v3';
+const CACHE_NAME = 'yanyan-edu-v4';
 const ASSETS = ['./', './index.html', './data.js', './app.js', './manifest.json'];
 
 self.addEventListener('install', e => {
