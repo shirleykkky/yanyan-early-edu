@@ -2,7 +2,7 @@
 // 宝宝：言言（出生日期：2025年12月9日）
 
 const BABY_NAME = '言言';
-const BABY_BIRTH = new Date(2025, 11, 9); // 2025年12月9日
+const BABY_BIRTH = new Date(2025, 11, 8); // 2025年12月8日
 const BABY_AGE_MONTHS = Math.floor((new Date() - BABY_BIRTH) / (30.44 * 86400000)); // 动态计算
 const BABY_STAGE = BABY_AGE_MONTHS >= 10 ? '扶走期' : (BABY_AGE_MONTHS >= 8 ? '爬行期→扶站期' : '爬行期');
 
