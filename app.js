@@ -4,6 +4,46 @@
 const START_DATE = new Date(2026, 7, 17); // 8月17日为Day0
 let _viewDate = new Date(); // 当前查看的日期，默认今天
 
+// ---- 月龄动态计算 ----
+function getBabyAge(birthDate) {
+  const today = new Date();
+  let months = (today.getFullYear() - birthDate.getFullYear()) * 12 + (today.getMonth() - birthDate.getMonth());
+  let days = today.getDate() - birthDate.getDate();
+  if (days < 0) {
+    months--;
+    const prevMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+    days += prevMonth.getDate();
+  }
+  return { months: Math.max(0, months), days: Math.max(0, days) };
+}
+
+function getBabyStage(months) {
+  if (months >= 12) return '学步期';
+  if (months >= 10) return '扶走期';
+  if (months >= 8) return '爬行期→扶站期';
+  if (months >= 6) return '坐稳期→爬行期';
+  return '趴趴期';
+}
+
+function formatBabyAge() {
+  const age = getBabyAge(BABY_BIRTH);
+  if (age.days === 0) return `${age.months}月龄`;
+  return `${age.months}月龄${age.days}天`;
+}
+
+function updateAgeDisplay() {
+  const age = getBabyAge(BABY_BIRTH);
+  const ageText = formatBabyAge();
+  const stage = getBabyStage(age.months);
+  // 更新首页月龄标签
+  const monthBadge = document.getElementById('monthBadge');
+  if (monthBadge) monthBadge.textContent = ageText;
+  // 更新观察页月龄标签
+  const obsMonth = document.getElementById('observeMonth');
+  if (obsMonth) obsMonth.textContent = ageText;
+  return { age, stage, ageText };
+}
+
 function dateToKey(d) {
   const y = d.getFullYear();
   const m = String(d.getMonth() + 1).padStart(2, '0');
@@ -151,6 +191,7 @@ function renderToday() {
     html += `<div class="activity-item">
       <div class="activity-name">${item.topic}</div>
       <div class="activity-desc">${item.guide}</div>
+      ${item.tips ? `<div class="activity-tips">💡 ${item.tips}</div>` : ''}
     </div>`;
   });
   html += `</div>`;
@@ -179,7 +220,7 @@ function renderToday() {
       <div class="module-title">大运动 + 感统</div>
       <div class="module-check ${checks.motor?'done':''}" onclick="toggleCheck('motor')">✓</div>
     </div>
-    <div style="font-size:11px;color:var(--text-light);margin-bottom:8px;padding:4px 8px;background:#FFF9C4;border-radius:6px;">言言目前处于爬行期→扶站期，以下活动适配此阶段</div>`;
+    <div style="font-size:11px;color:var(--text-light);margin-bottom:8px;padding:4px 8px;background:#FFF9C4;border-radius:6px;">言言目前${BABY_STAGE}，以下活动适配此阶段</div>`;
   motorData.forEach(item => {
     html += `<div class="activity-item">
       <div class="activity-name">${item.name}</div>
@@ -555,6 +596,7 @@ function showToast(msg) {
 function init() {
   const fns = [renderToday, renderObserve, renderActivityLib, renderTools, renderSpace, renderEnglish, renderThemes, renderPrinciples];
   fns.forEach(fn => { try { fn(); } catch(e) { console.error('Init error:', fn.name, e); } });
+  updateAgeDisplay();
 }
 
 document.addEventListener('DOMContentLoaded', init);
