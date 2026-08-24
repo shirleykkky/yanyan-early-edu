@@ -41,6 +41,9 @@ function updateAgeDisplay() {
   // 更新观察页月龄标签
   const obsMonth = document.getElementById('observeMonth');
   if (obsMonth) obsMonth.textContent = ageText;
+  // 更新辅食页月龄标签
+  const foodMonth = document.getElementById('foodMonth');
+  if (foodMonth) foodMonth.textContent = ageText;
   return { age, stage, ageText };
 }
 
@@ -592,9 +595,123 @@ function showToast(msg) {
   setTimeout(() => toast.remove(), 1500);
 }
 
+// ---- 辅食指南 ----
+function renderFood() {
+  const age = getBabyAge(BABY_BIRTH);
+  const monthKey = age.months <= 9 ? '8-9' : (age.months <= 12 ? '10-12' : '10-12');
+  const guide = FOOD_GUIDE[monthKey];
+  if (!guide) return;
+
+  // 更新页头
+  const foodMonth = document.getElementById('foodMonth');
+  if (foodMonth) foodMonth.textContent = guide.stage;
+  const foodSubtitle = document.getElementById('foodSubtitle');
+  if (foodSubtitle) foodSubtitle.textContent = guide.subtitle;
+
+  let html = '';
+
+  // 1. 每日作息安排
+  html += `<div class="module-card">
+    <div class="module-header">
+      <div class="module-icon" style="background:linear-gradient(135deg,#FFD54F,#FFB366);">🕐</div>
+      <div class="module-title">每日饮食安排</div>
+    </div>`;
+  guide.dailySchedule.forEach(item => {
+    const typeColor = item.type === '奶' ? '#64B5F6' : (item.type === '辅食' ? '#FF8FAB' : '#7BC67E');
+    html += `<div class="activity-item" style="display:flex;align-items:flex-start;gap:8px;">
+      <span style="font-size:11px;padding:2px 8px;border-radius:10px;background:${typeColor}22;color:${typeColor};white-space:nowrap;flex-shrink:0;">${item.time}</span>
+      <div style="flex:1;">
+        <div class="activity-name"><span class="activity-tag" style="background:${typeColor}22;color:${typeColor};">${item.type}</span> ${item.detail}</div>
+      </div>
+    </div>`;
+  });
+  html += `</div>`;
+
+  // 2. 营养重点
+  html += `<div class="module-card">
+    <div class="module-header">
+      <div class="module-icon" style="background:linear-gradient(135deg,#7BC67E,#43A047);">🥗</div>
+      <div class="module-title">营养重点</div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;">`;
+  guide.nutrition.forEach(n => {
+    html += `<div style="padding:10px;border-radius:10px;background:${n.color}11;border:1px solid ${n.color}33;">
+      <div style="font-size:20px;margin-bottom:4px;">${n.icon}</div>
+      <div style="font-size:14px;font-weight:600;color:${n.color};margin-bottom:2px;">${n.title}</div>
+      <div style="font-size:11px;color:var(--text-light);line-height:1.5;">${n.desc}</div>
+    </div>`;
+  });
+  html += `</div></div>`;
+
+  // 3. 一周食谱参考
+  const dayIdx = getDayIndex(_viewDate) % guide.weeklyMenu.length;
+  const todayMenu = guide.weeklyMenu[dayIdx];
+  html += `<div class="module-card">
+    <div class="module-header">
+      <div class="module-icon" style="background:linear-gradient(135deg,#FF8FAB,#FFB366);">📋</div>
+      <div class="module-title">今日食谱参考</div>
+    </div>
+    <div style="font-size:11px;color:var(--text-light);margin-bottom:8px;">每日轮换 · 点击查看不同天 · 今天是第${dayIdx + 1}天</div>`;
+  todayMenu.forEach(item => {
+    const mealColor = item.meal.includes('早餐') ? '#FFB366' : (item.meal.includes('午餐') ? '#7BC67E' : (item.meal.includes('晚餐') ? '#64B5F6' : '#B39DDB'));
+    html += `<div class="activity-item">
+      <div class="activity-name"><span class="activity-tag" style="background:${mealColor}22;color:${mealColor};">${item.meal}</span></div>
+      <div class="activity-desc">${item.food}</div>
+    </div>`;
+  });
+  html += `</div>`;
+
+  // 4. 手指食物推荐
+  html += `<div class="module-card">
+    <div class="module-header">
+      <div class="module-icon" style="background:linear-gradient(135deg,#B39DDB,#8E24AA);">✋</div>
+      <div class="module-title">手指食物推荐</div>
+    </div>
+    <div style="font-size:11px;color:var(--text-light);margin-bottom:8px;">自主进食 · 锻炼精细动作+手眼协调 · 每餐至少提供1种</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;">`;
+  guide.fingerFoods.forEach(f => {
+    html += `<div style="padding:10px;border-radius:10px;background:#F5F5F5;border:1px solid #EEEEEE;">
+      <div style="font-size:13px;font-weight:600;margin-bottom:2px;">${f.name}</div>
+      <div style="font-size:11px;color:var(--text-light);margin-bottom:4px;">${f.desc}</div>
+      <span style="font-size:10px;padding:1px 6px;border-radius:6px;background:#B39DDB22;color:#8E24AA;">${f.skill}</span>
+    </div>`;
+  });
+  html += `</div></div>`;
+
+  // 5. 注意事项
+  html += `<div class="module-card">
+    <div class="module-header">
+      <div class="module-icon" style="background:linear-gradient(135deg,#FFD54F,#FF8FAB);">💡</div>
+      <div class="module-title">添加要点</div>
+    </div>`;
+  guide.tips.forEach((tip, i) => {
+    html += `<div class="activity-item" style="padding:6px 0;">
+      <div style="font-size:12px;line-height:1.6;"><span style="color:var(--orange);font-weight:600;">${i + 1}.</span> ${tip}</div>
+    </div>`;
+  });
+  html += `</div>`;
+
+  // 6. 禁忌食物
+  html += `<div class="module-card" style="background:linear-gradient(135deg,#FFEBEE,#FFF3E0);">
+    <div class="module-header">
+      <div class="module-icon" style="background:linear-gradient(135deg,#E53935,#FB8C00);">🚫</div>
+      <div class="module-title">禁忌食物</div>
+    </div>
+    <div style="font-size:11px;color:var(--text-light);margin-bottom:8px;">${guide.stage}严格避免 · 事关安全</div>`;
+  guide.avoid.forEach(item => {
+    html += `<div class="activity-item" style="padding:4px 0;display:flex;align-items:center;gap:6px;">
+      <span style="font-size:14px;">❌</span>
+      <span style="font-size:12px;color:var(--red);line-height:1.5;">${item}</span>
+    </div>`;
+  });
+  html += `</div>`;
+
+  document.getElementById('foodContent').innerHTML = html;
+}
+
 // ---- 初始化 ----
 function init() {
-  const fns = [renderToday, renderObserve, renderActivityLib, renderTools, renderSpace, renderEnglish, renderThemes, renderPrinciples];
+  const fns = [renderToday, renderObserve, renderActivityLib, renderTools, renderSpace, renderFood, renderEnglish, renderThemes, renderPrinciples];
   fns.forEach(fn => { try { fn(); } catch(e) { console.error('Init error:', fn.name, e); } });
   updateAgeDisplay();
 }
