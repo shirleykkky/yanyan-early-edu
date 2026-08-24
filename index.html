@@ -376,6 +376,10 @@ body {
     <div class="nav-icon" style="background:#FFF9C4;">🏠</div>
     <div class="nav-label">空间</div>
   </button>
+  <button class="nav-item" data-page="food" onclick="switchPage('food')">
+    <div class="nav-icon" style="background:#FFF9C4;">🍲</div>
+    <div class="nav-label">辅食</div>
+  </button>
   <button class="nav-item" data-page="english" onclick="switchPage('english')">
     <div class="nav-icon" style="background:#BBDEFB;">🔤</div>
     <div class="nav-label">英文</div>
@@ -451,6 +455,16 @@ body {
     <div id="spaceContent"></div>
   </div>
 
+  <!-- ====== 辅食模块 ====== -->
+  <div class="page" id="page-food">
+    <div class="page-header">
+      <div class="page-title">辅食指南</div>
+      <span class="month-badge" id="foodMonth">8月龄</span>
+    </div>
+    <div style="font-size:12px;color:var(--text-light);margin-bottom:12px;" id="foodSubtitle">随月龄自动适配 · 科学添加 · 优先天然食材</div>
+    <div id="foodContent"></div>
+  </div>
+
   <!-- ====== 英文启蒙 ====== -->
   <div class="page" id="page-english">
     <div class="page-header">
@@ -484,8 +498,8 @@ body {
 
 </div>
 
-<script src="data.js?v=4"></script>
-<script src="app.js?v=4"></script>
+<script src="data.js?v=5"></script>
+<script src="app.js?v=5"></script>
 <script>
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('./sw.js').catch(()=>{});
