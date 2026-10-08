@@ -3,7 +3,14 @@
 
 const BABY_NAME = '言言';
 const BABY_BIRTH = new Date(2025, 11, 8); // 2025年12月8日
-const BABY_AGE_MONTHS = Math.floor((new Date() - BABY_BIRTH) / (30.44 * 86400000)); // 动态计算
+// 精确月龄计算（按日历月，不以30.44天平均折算）
+function calcBabyAgeMonths(birthDate) {
+  const today = new Date();
+  let months = (today.getFullYear() - birthDate.getFullYear()) * 12 + (today.getMonth() - birthDate.getMonth());
+  if (today.getDate() < birthDate.getDate()) months--;
+  return Math.max(0, months);
+}
+const BABY_AGE_MONTHS = calcBabyAgeMonths(BABY_BIRTH); // 动态计算
 const BABY_STAGE = BABY_AGE_MONTHS >= 10 ? '扶走期' : (BABY_AGE_MONTHS >= 8 ? '爬行期→扶站期' : '爬行期');
 
 // ===== 每周主题循环 =====
